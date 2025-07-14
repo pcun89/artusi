@@ -1,0 +1,66 @@
+import unittest
+import os
+import shutil
+from artusi_simulation import (
+    create_directory, create_file, append_to_file,
+    move_file, read_file, list_directory
+)
+
+TEST_DIR = "test_artusi"
+
+class TestArtusiSimulation(unittest.TestCase):
+
+    def setUp(self):
+        # Create a clean test environment
+        create_directory(TEST_DIR)
+
+    def tearDown(self):
+        # Remove all files and directories after each test
+        if os.path.exists(TEST_DIR):
+            shutil.rmtree(TEST_DIR)
+
+    def test_create_directory(self):
+        sub_dir = os.path.join(TEST_DIR, "subfolder")
+        create_directory(sub_dir)
+        self.assertTrue(os.path.exists(sub_dir))
+        self.assertTrue(os.path.isdir(sub_dir))
+
+    def test_create_file(self):
+        file_path = os.path.join(TEST_DIR, "sample.txt")
+        create_file(file_path, "Hello Artusi")
+        self.assertTrue(os.path.isfile(file_path))
+        with open(file_path, "r") as f:
+            self.assertEqual(f.read(), "Hello Artusi")
+
+    def test_append_to_file(self):
+        file_path = os.path.join(TEST_DIR, "append.txt")
+        create_file(file_path, "Start\n")
+        append_to_file(file_path, "Second line")
+        with open(file_path, "r") as f:
+            self.assertEqual(f.read(), "Start\nSecond line\n")
+
+    def test_move_file(self):
+        src = os.path.join(TEST_DIR, "to_move.txt")
+        dest_dir = os.path.join(TEST_DIR, "notes")
+        dest = os.path.join(dest_dir, "to_move.txt")
+        create_directory(dest_dir)
+        create_file(src, "Moving content")
+        move_file(src, dest)
+        self.assertTrue(os.path.exists(dest))
+        self.assertFalse(os.path.exists(src))
+
+    def test_list_directory(self):
+        # Capture printed output from list_directory
+        sub_file = os.path.join(TEST_DIR, "list_me.txt")
+        create_file(sub_file)
+        # No assertion needed unless capturing stdout, but function runs
+        list_directory(TEST_DIR)
+
+    def test_read_file(self):
+        # Capture output from read_file (assumes print)
+        file_path = os.path.join(TEST_DIR, "readable.txt")
+        create_file(file_path, "Read me!")
+        read_file(file_path)  # Just run to ensure no error (could capture stdout)
+
+if __name__ == '__main__':
+    unittest.main()
