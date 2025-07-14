@@ -1,0 +1,58 @@
+import os
+import shutil
+
+# Base simulation directory
+BASE_DIR = "artusi_project"
+
+# Utility functions
+def create_directory(path):
+    os.makedirs(path, exist_ok=True)
+
+def create_file(path, content=""):
+    with open(path, "w") as f:
+        f.write(content)
+
+def append_to_file(path, content):
+    with open(path, "a") as f:
+        f.write(content + "\n")
+
+def move_file(src, dest):
+    shutil.move(src, dest)
+
+def read_file(path):
+    with open(path, "r") as f:
+        print(f"\n📄 {path} content:\n{f.read()}")
+
+def list_directory(path):
+    print(f"\n📁 Listing directory: {path}")
+    for item in os.listdir(path):
+        print(" -", item)
+
+def setup_artusi_simulation():
+    print("🛠️ Setting up Artusi file simulation...")
+
+    # 1. Create base project directory and notes folder
+    create_directory(BASE_DIR)
+    create_directory(os.path.join(BASE_DIR, "notes"))
+
+    # 2. Create and populate manifesto.txt
+    manifesto_path = os.path.join(BASE_DIR, "manifesto.txt")
+    create_file(manifesto_path, "Welcome to Artusi\n")
+    append_to_file(manifesto_path, "- Learn the CLI")
+    append_to_file(manifesto_path, "- Build developer confidence")
+
+    # 3. Move manifesto.txt into /notes
+    new_path = os.path.join(BASE_DIR, "notes", "manifesto.txt")
+    move_file(manifesto_path, new_path)
+
+    # 4. View contents of the notes directory
+    list_directory(os.path.join(BASE_DIR, "notes"))
+
+    # 5. Read contents of manifesto.txt
+    read_file(new_path)
+
+    print("\n✅ Artusi project simulation complete.")
+
+# Run simulation
+if __name__ == "__main__":
+    setup_artusi_simulation()
